@@ -1,4 +1,4 @@
-class Container extends React.Component {
+cclass Container extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -29,13 +29,17 @@ class Container extends React.Component {
   
   componentWillMount(){
         const oldData = JSON.parse(localStorage.getItem('recipes'));
-        localStorage.getItem('recepies') && this.setState({recipes: oldData});
+        localStorage.getItem('recipes') && this.setState({recipes: oldData});
         document.body.classList.add('fonts', 'fade-color');
-        console.log(this.state.counter);
+       
   }
   
   componentDidMount(){
        this.setState({counter: this.state.recipes.length})
+  }
+  
+  componentDidUpdate(){
+    localStorage.setItem('recipes', JSON.stringify(this.state.recipes));
   }
 
   NewRecipe(){
@@ -292,5 +296,3 @@ function App() {
 const root = document.getElementById('App');
 ReactDOM.render(<App />, root);        
 
-
-  
