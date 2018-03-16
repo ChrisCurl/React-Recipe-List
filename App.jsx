@@ -3,16 +3,16 @@ class Container extends React.Component {
     super();
     this.state = {
       recipes: [
-                {   key: 0,
+                {   key: .25,
                     title: 'Pizza',
                     img: 'https://vignette.wikia.nocookie.net/benttech/images/a/a4/Pizza.jpg/revision/latest?cb=20150404024305',
                     instructions: "Whisk 3 3/4 cups flour and 1 1/2 teaspoons salt. Make a well and add 1 1/3 cups warm water, 1 tablespoon sugar and 1 packet yeast. When foamy, mix in 3 tablespoons olive oil; knead until smooth, 5 minutes. Brush with olive oil, cover in a bowl and let rise until doubled, about 1 hour 30 minutes. Divide into two 1-pound balls. Use 1 pound per recipe unless noted"
                 }, {
-                    key: 1,
+                    key: .5,
                     title: 'Hamburger',  
                     img:'https://assets.epicurious.com/photos/57c5c6d9cf9e9ad43de2d96e/6:4/w_620%2Ch_413/the-ultimate-hamburger.jpg',
                     instructions: "2 pounds ground beef, 1 egg, beaten, 3/4 cup dry bread crumbs, 3 tablespoons evaporated milk, 2 tablespoons Worcestershire sauce, 1/8 teaspoon cayenne pepper, 2 cloves garlic, minced"
-                }, {   key: 2,
+                }, {   key: .75,
                     title: 'Salad',
                     img: 'http://en.freejpg.com.ar/asset/900/a0/a0d1/F100005379.jpg',
                     instructions: "Go to the Whole Foods Salad Bar and make a salad."
@@ -31,12 +31,13 @@ class Container extends React.Component {
         const oldData = JSON.parse(localStorage.getItem('recipes'));
         localStorage.getItem('recepies') && this.setState({recipes: oldData});
         document.body.classList.add('fonts', 'fade-color');
-        console.log('hello');
+        console.log(this.state.counter);
   }
   
-  componentDidUpdate(){
+  componentDidMount(){
+       this.setState({counter: this.state.recipes.length})
   }
-  
+
   NewRecipe(){
     this.setState({showNew: !this.state.showNew})
   }
@@ -50,15 +51,27 @@ class Container extends React.Component {
   addNewRecipe(newItem){
     const newState = this.state.recipes.concat(newItem);
     this.setState({recipes: newState});
-    this.setState({counter: this.state.counter +1})
+        console.log(this.state.counter);
+       this.setState({counter: newState.length})
+        console.log('recipes length'+ newState.length);
+
    // this.saveState;
   }
   
   deleteRecipe(val){
     const tempRecipe = this.state.recipes;
-    tempRecipe.splice(val,1);
-    this.setState({recipes: tempRecipe});
-    console.log(this.state.recipes);
+    for(let i = 0; i<tempRecipe.length ; i++) {
+      if(tempRecipe[i].key == val) {
+        tempRecipe.splice(i,1);
+      }
+         console.log(tempRecipe)
+    }
+    console.log('val is '+ val)
+    
+ 
+    
+     this.setState({recipes: tempRecipe});
+       this.setState({counter: this.state.recipes.length})
   }
   saveState(){
     localStorage.setItem('recipes', JSON.stringify(this.state.recepies))
@@ -69,7 +82,7 @@ class Container extends React.Component {
       <div className='appContainer'>
         <h1 className = 'centerText'>Recipe List</h1>
         <div className = 'center'>
-        {this.state.showNew && <NewItem hideNewRecipe={this.hideNewRecipe} addNewRecipe={this.addNewRecipe} showRecipe={this.NewRecipe} />}
+        {this.state.showNew && <NewItem counter={this.state.counter} hideNewRecipe={this.hideNewRecipe} addNewRecipe={this.addNewRecipe} showRecipe={this.NewRecipe} />}
         <button onClick = {()=> {this.NewRecipe()}} className= 'addNew'>Add Recipe</button>
         <AllFoods data={this.state.recipes} show={this.state.show} editRecipe= {this.editRecipe} deleteRecipe={this.deleteRecipe} />
         </div>
@@ -186,7 +199,9 @@ class NewItem extends React.Component{
   
   createFood(){
     this.props.showRecipe();
-   const newFood = {key: this.props.counter, img: this.state.img, title: this.state.title, instructions: this.state.instructions};
+    const key = Math.floor(Math.random()*1000);
+    console.log(key)
+   const newFood = {key: key, img: this.state.img, title: this.state.title, instructions: this.state.instructions};
    this.props.addNewRecipe(newFood);
    this.props.newRecipe;
   }
